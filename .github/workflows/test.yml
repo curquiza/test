@@ -1,6 +1,6 @@
 # This is a basic workflow to help you get started with Actions
 
-name: CI
+name: Tests
 
 on:
   push:
@@ -14,9 +14,17 @@ jobs:
   test:
     name: basic-test
     runs-on: ubuntu-latest
-
+    # Will not run if the event is a pre-release PR (to bump-meilisearch-v*)
+    if: github.event_name != 'pull_request' || !startsWith(github.base_ref, 'bump-meilisearch-v')
     steps:
       - uses: actions/checkout@v2
+      - name: Run test against MeiliSearch (latest)
+        run: exit 1
 
-      - name: Run test
-        run: bash test.sh
+  linter:
+    name: linter
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Run linter
+        run: echo "OK"

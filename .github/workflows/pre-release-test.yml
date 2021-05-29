@@ -1,0 +1,20 @@
+# This is a basic workflow to help you get started with Actions!
+
+name: Pre-Release Tests
+
+on:
+  push:
+    branches: bump-meilisearch-v*
+  pull_request:
+    branches: bump-meilisearch-v*
+
+jobs:
+  test:
+    name: basic-test-against-rc
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use the latest MeiliSearch RC
+        run: echo "MEILISEARCH_VERSION=$(curl https://raw.githubusercontent.com/meilisearch/integration-guides/master/scripts/get-latest-meilisearch-rc.sh | bash)" >> $GITHUB_ENV
+      - name: Run test against MeiliSearch ${{ env.MEILISEARCH_VERSION }}
+        run: bash test.sh ${{ env.MEILISEARCH_VERSION }}
